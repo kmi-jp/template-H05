@@ -28,19 +28,19 @@ def cash_flow(users):
 
 
 @pytest.fixture
-def columns():
+def index():
     return Index(["names", "salary", "cash flow"])
 
 
-def test_str_repr(names, salaries, cash_flow, columns):
-    data = DataFrame([names, salaries, cash_flow], columns=columns)
+def test_str_repr(names, salaries, cash_flow, index):
+    data = DataFrame([names, salaries, cash_flow], index=index)
 
     assert str(data) == "DataFrame(4, 3)"
     assert repr(data) == "DataFrame(4, 3)"
 
 
-def test_shape(names, salaries, cash_flow, columns):
-    data = DataFrame([names, salaries, cash_flow], columns=columns)
+def test_shape(names, salaries, cash_flow, index):
+    data = DataFrame([names, salaries, cash_flow], index=index)
 
     assert data.shape == (4, 3)
 
@@ -52,9 +52,9 @@ user 2,Petr Pavel,300000,10000
 user 3,Pavel Petr,20000,-2000
 user 4,Ludek Skocil,50000,1100"""
 
-    data = DataFrame.from_csv(text=input_text)
+    data = DataFrame.from_csv(input_text)
 
-    assert data.columns.labels == ["names", "salary", "cash flow"]
+    assert data.index.labels == ["names", "salary", "cash flow"]
 
     assert list(data.values[0].values) == list(
         ["Lukas Novak", "Petr Pavel", "Pavel Petr", "Ludek Skocil"]
