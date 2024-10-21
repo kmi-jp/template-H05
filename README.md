@@ -1,10 +1,13 @@
-# L06E02: Data 2
+# H05: Data 2
+
 Balíček `data` z minulého semináře rozšiřte o následující funkcionalitu. Ve zdrojovém kódu urdžujte pořádek a metody seskupujte dle významu.
 
 ## Metoda `__len__`
-Třídě `DataFrame`, `Series` a `Index` implementujte metodu `__len__` obsluhující volání funkce `len()`. V případě třídy `Series` a `Index` se jedná o počet prvků, v případě `DataFrame` o počet sloupců.
+
+Třídě `DataFrame`, `Series` a `Index` implementujte metodu `__len__` obsluhující volání funkce `len()`. V případě třídy `Series` a `Index` se jedná o počet prvků, v případě `DataFrame` o počet sloupců, tj. počet prvků indexu v atributu `index`.
 
 ## Vlastnost `.shape`
+
 Třídě `DataFrame` a `Series` přidejte vlastnost `.shape`, která pomoci tuple reprezentuje rozměry. Vlastnost se bude po každém volání přepočítávat (použíjte dekorátor `@property`).
 
 ```python
@@ -21,12 +24,13 @@ cash_flow = Series([-100, 10000, -2000, 1100], index=users)
 
 assert cash_flow.shape == (4, )
 
-data = DataFrame([names, salaries, cash_flow], columns=Index(["names", "salary", "cash flow"]))
+data = DataFrame([names, salaries, cash_flow], index=Index(["names", "salary", "cash flow"]))
 
 assert data.shape == (4, 3)
 ```
 
 ## Metody `.from_csv(text, separator=",")`
+
 Implementujte class metody `DataFrame.from_csv(text, separator=",")` a `Series.from_csv(text, separator=",")` umožňující vytvořit odpovídající třídy na základě řetězce hodnot oddělených separátorem. Na rozdělení textu na jednotlivé řádky použíjte `text.splitlines()`.
 
 Hodnoty vždy reprezenrujte jako řetězec, nepřevádějte je na čísla nebo jiné datové typy.
@@ -52,15 +56,15 @@ user 2,Petr Pavel,300000,10000
 user 3,Pavel Petr,20000,-2000
 user 4,Ludek Skocil,50000,1100"""
 
-data = DataFrame.from_csv(text=input_text)
+data = DataFrame.from_csv(input_text)
 
-assert data.columns.labels == ["names", "salary", "cash flow"]
+assert data.index.labels == ["names", "salary", "cash flow"]
 
 assert list(data.values[0].values) == list(["Lukas Novak", "Petr Pavel", "Pavel Petr", "Ludek Skocil"])
 assert data.values[0].index.labels == ["user 1", "user 2", "user 3", "user 4"]
 assert list(data.values[1].values) == list(["20000", "300000", "20000", "50000"])
 assert data.values[1].index.labels == ["user 1", "user 2", "user 3", "user 4"]
-assert list(data.values[2].values) == list(["-100", "10000", "-2000", "1100"]))
+assert list(data.values[2].values) == list(["-100", "10000", "-2000", "1100"])
 assert data.values[2].index.labels == ["user 1", "user 2", "user 3", "user 4"]
 
 # nezapomeňte, že přetypování na čísla lze řešit následovně (součet všech platů)
@@ -94,7 +98,8 @@ DataFrame(2, 4)
 Kde `2` (počet řádků) a `4` jsou rozměry dataframu.
 
 ## Series operace
-Třídě `Series` implementujte následující operace. Veškeré operace pracují po prvcících, výsledkem je vždy nová instance `Series`. Pokud vstupní instance nebudou mít stejnou délky, vyvolejte `ValueError`.
+
+Třídě `Series` implementujte následující operace. Veškeré operace pracují po prvcících, výsledkem je vždy nová instance `Series`. Pokud vstupní instance nebudou mít stejnou délku, vyvolejte `ValueError`. V případě, že operace není definovaná pro dané argumenty, vraťte konstantu `NotImplemented`. 
 
 ```
 __add__ # chování +
@@ -119,6 +124,7 @@ self._apply_operator(self, other, operator.add)
 Dále implementujte metodu `__round__(self, precision)` umožňující použití vestavěné funkce `round(number, precision)`. Výsledkem je opět nová instance `Series`. Dokážete použít metodu `Series.apply(self, func)`?
 
 ## Lokální testování
+
 Funkčnost řešení ověříte následujícím příkazem:
 
 ```bash
