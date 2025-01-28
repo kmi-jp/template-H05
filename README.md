@@ -6,15 +6,48 @@ Balíček `data` z minulého semináře rozšiřte o následující funkcionalit
 
 Třídě `DataFrame`, `Series` a `Index` implementujte metodu `__len__` obsluhující volání funkce `len()`. V případě třídy `Series` a `Index` se jedná o počet prvků, v případě `DataFrame` o počet sloupců, tj. počet prvků indexu v atributu `index`.
 
+## Změna atributů `.labels`, `.values` a `.index` na vlastnosti 
+
+Třídě `Index` změnte atribut `.labels` na vlastnost pomocí dekorátoru `@property`, přičemž tato vlastnost nebude nastavitelná.
+
+```python
+from data.index import Index
+
+users = Index(["user 1", "user 2", "user 3", "user 4"], name="names")
+
+assert users.labels == ["user 1", "user 2", "user 3", "user 4"]
+# AttributeError: property 'labels' of 'Index' object has no setter
+users.labels = [] 
+```
+
+Podobně změnte třídě `IndexedContainer` atribut `.values` na vlastnost pomocí dekorátoru `@property`, přičemž tato vlastnost nebude nastavitelná. Analogicky upravte atribut `.index`, kterému ale definujte i `setter`, přičemž změna hodnoty proběhne jen v případě, že nový `Index` má stejnou délku jako `.values` (v opačném případě nastane `IndexMismatchError`).
+
+
+```python
+from data.indexed_container import IndexedContainer
+
+users = Index(["user 1", "user 2", "user 3", "user 4"], name="names")
+numbers = IndexedContainer([1, 2, 3, 4], index=users)
+
+assert numbers.values == [1, 2, 3, 4]
+# AttributeError: property 'values' of 'IndexedContainer' object has no setter
+numbers.values = []
+
+assert numbers.Index == users
+# IndexMismatch Error
+numbers.index = Index(labels=[42])
+# toto nastavení proběhne v pořádku
+numbers.index = Index(labels=['a', 'b', 'c', 'd'])
+```
+
 ## Vlastnost `.shape`
 
-Třídě `DataFrame` a `Series` přidejte vlastnost `.shape`, která pomoci tuple reprezentuje rozměry. Vlastnost se bude po každém volání přepočítávat (použíjte dekorátor `@property`).
+Třídě `DataFrame` a `Series` přidejte vlastnost `.shape`, která pomoci tuple reprezentuje rozměry. Vlastnost se bude počítat při každém volání znovu (použíjte dekorátor `@property`).
 
 ```python
 from data.series import Series
 from data.index import Index
 from data.dataframe import DataFrame
-
 
 users = Index(["user 1", "user 2", "user 3", "user 4"], name="names")
 
